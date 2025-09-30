@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz App</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        background: linear-gradient(135deg, #81c784, #4caf50);
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      .container {
+        background: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        width: 350px;
+        text-align: left;
+        animation: fadeIn 0.8s ease;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #2e7d32;
+      }
+
+      p {
+        font-weight: bold;
+        margin: 15px 0 8px;
+      }
+
+      label {
+        display: block;
+        padding: 8px 12px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      input[type="radio"] {
+        margin-right: 10px;
+      }
+
+      label:hover {
+        background: #f1f8e9;
+        border-color: #81c784;
+      }
+
+      button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-top: 20px;
+        background: #4caf50;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+
+      button:hover {
+        background: #388e3c;
+      }
+
+      #score {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #2e7d32;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🌱 Quiz App</h1>
+      <div id="quiz"></div>
+      <button id="submitBtn" onclick="submitQuiz()">Submit</button>
+      <button id="playAgainBtn" onclick="playAgain()" style="display: none">
+        Play Again
+      </button>
+
+      <p id="score"></p>
+    </div>
+
+    <script type="module">
+      import { quizData } from "./quiz-data.js";
+
+      function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      let questions = [];
+
+      function loadQuiz() {
+        document.getElementById("quiz").innerHTML = "";
+        document.getElementById("score").textContent = "";
+
+        questions = shuffle([...quizData]).slice(0, 10);
+
+        questions.forEach((q, i) => {
+          const quizDiv = document.getElementById("quiz");
+          quizDiv.innerHTML += `<p>${q.question}</p>`;
+          q.options.forEach((opt) => {
+            quizDiv.innerHTML += `
+          <label>
+            <input type='radio' name='q${i}' value='${opt}'> ${opt}
+          </label>
+        `;
+          });
+        });
+        document.getElementById("submitBtn").style.display = "block";
+        document.getElementById("playAgainBtn").style.display = "none";
+      }
+
+      window.submitQuiz = function () {
+        let score = 0;
+        questions.forEach((q, i) => {
+          const selected = document.querySelector(
+            `input[name='q${i}']:checked`
+          );
+          if (selected && selected.value === q.answer) score++;
+        });
+        document.getElementById(
+          "score"
+        ).textContent = `✅ Your Score: ${score} / ${questions.length}`;
+
+        document.getElementById("submitBtn").style.display = "none";
+        document.getElementById("playAgainBtn").style.display = "block";
+      };
+
+      window.playAgain = function () {
+        loadQuiz();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
+      loadQuiz();
+    </script>
+  </body>
+</html>

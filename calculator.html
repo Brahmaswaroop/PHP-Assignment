@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculator</title>
+  </head>
+  <body>
+    <div class="calculator">
+      <div id="display_container">
+        <input type="text" id="temp-display" disabled />
+      </div>
+      <input type="text" id="display" disabled />
+      <div class="buttons">
+        <button onclick="appendNumber('1')">1</button>
+        <button onclick="appendNumber('2')">2</button>
+        <button onclick="appendNumber('3')">3</button>
+        <button onclick="appendOperator('+')">+</button>
+        <button onclick="appendNumber('4')">4</button>
+        <button onclick="appendNumber('5')">5</button>
+        <button onclick="appendNumber('6')">6</button>
+        <button onclick="appendOperator('-')">-</button>
+        <button onclick="appendNumber('7')">7</button>
+        <button onclick="appendNumber('8')">8</button>
+        <button onclick="appendNumber('9')">9</button>
+        <button onclick="appendOperator('*')">*</button>
+        <button onclick="appendNumber('0')">0</button>
+        <button onclick="calculate()">=</button>
+        <button onclick="appendOperator('/')">/</button>
+        <button onclick="clearDisplay()">C</button>
+      </div>
+    </div>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: #f0f0f0;
+        font-family: sans-serif;
+      }
+      .calculator {
+        background: #fff;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+      #display {
+        height: 40px;
+        margin-bottom: 10px;
+        text-align: right;
+        font-size: 1.2em;
+        padding: 5px;
+        border: 0;
+        background: none;
+      }
+      #display_container {
+        display: flex;
+        background: lightgrey;
+        justify-content: end;
+      }
+      #temp-display {
+        width: 90%;
+        height: 20px;
+        margin-bottom: 5px;
+        text-align: right;
+        font-size: 0.8em;
+        padding: 5px;
+        border: 0;
+        color: gray;
+        background: lightgrey;
+      }
+      .buttons button {
+        width: 50px;
+        height: 50px;
+        margin: 5px;
+        border: 0;
+        border-radius: 10px;
+        background: #41b3df;
+        transition: 300ms;
+        font-size: 1.2em;
+      }
+      .buttons button:hover {
+        background: #af54bf;
+        color: white;
+      }
+      .buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+      }
+    </style>
+    <script>
+      let temp = 0;
+      let operator = null;
+      let v_changed = false;
+      let display_temp = false;
+      let display = document.getElementById("display");
+      let temp_display = document.getElementById("temp-display");
+      function appendNumber(n) {
+        if (display_temp) {
+          display.value = "";
+          display_temp = false;
+        }
+        display.value += n;
+        v_changed = true;
+      }
+      function appendOperator(op) {
+        if (!v_changed) {
+          operator = op;
+          temp_display.value = temp + " " + operator;
+          return;
+        }
+        temp = calculate();
+        operator = op;
+        temp_display.value = temp + " " + operator;
+        display.value = temp;
+        display_temp = true;
+        v_changed = false;
+      }
+      function calculate() {
+        try {
+          if (operator === null) return parseFloat(display.value);
+          let result = temp + operator + display.value;
+          return eval(result);
+        } catch {
+          display.value = "Error";
+        }
+      }
+      function clearDisplay() {
+        if (v_changed) {
+          display.value = "";
+          v_changed = false;
+          return;
+        } else {
+          display.value = "";
+          temp_display.value = "";
+          temp = 0;
+          operator = null;
+        }
+      }
+    </script>
+  </body>
+</html>
